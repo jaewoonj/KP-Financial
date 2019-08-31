@@ -2,44 +2,101 @@ package com.company;
 
 import java.io.*;
 import java.util.*;
+
 public class Main {
 
     //CSV File Format Configuration
     private static final int NUM_OF_COL = 6;
-    private static final int DATE_ROW= 6;
-    private static final int HEADER= 10;
-    private static final int FOOTER= 12;
+    private static final int DATE_ROW = 6;
+    private static final int HEADER = 10;
+    private static final int FOOTER = 12;
 
     private static List<String> header;
     private static List<List<String>> output;
 
+    private static final String RAW_DATA_PATH = "raw_data";
+    private static final String OUTPUT_PATH = "output";
+
     //TEMPORARY
     private static final String TICKER = "BFCCX";
-    private static final String FILE_PATH = "samples-1/BFCCX_raw.csv";
+    private static final String FILE_PATH = "samples/BFCCX_raw.csv";
 
     public static void main(String[] args) {
         buildHeader();
-        List<ArrayList<String>> data = null;
 
         try {
+            File dir = new File(RAW_DATA_PATH);
+            File[] files = dir.listFiles();
+            String[] fileNames = dir.list();
 
-            //collect data
-            data = readData();
+            for (int i = 0; i < files.length; i++) {
+                String inputFilePath = RAW_DATA_PATH + "/" + fileNames[i];
 
-            //initialize output
-            output = new ArrayList<>();
-            output.add(header);
+                //collect data
+                List<ArrayList<String>> data = readData(inputFilePath);
 
-            //re-format raw data into required output format
-            reformatData(data, output);
+                //initialize output
+                output = new ArrayList<>();
+                output.add(header);
 
-            //export output data
-            saveData(output);
+                //re-format raw data into required output format
+                reformatData(data, output, fileNames[i].split("\\.")[0]);
+
+                //export output data
+                String outputFilePath = OUTPUT_PATH + "/" + fileNames[i];
+                saveData(output, outputFilePath);
+
+            }
+//            //collect data
+//            data = readData();
+//
+//
+//            //initialize output
+//            output = new ArrayList<>();
+//            output.add(header);
+//
+//            //re-format raw data into required output format
+//            reformatData(data, output);
+//
+//            //export output data
+//            saveData(output);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
+    private static void readDir() throws IOException {
+        String target_dir = "raw_data";
+        File dir = new File(target_dir);
+        File[] files = dir.listFiles();
+        String[] fileNames = dir.list();
+        for (String a : fileNames) {
+            System.out.println(a);
+        }
+//        for (File f : files){
+//                if(f.isFile()) {
+//                    BufferedReader inputStream = null;
+//
+//                    try {
+//                        inputStream = new BufferedReader(
+//                                new FileReader(f));
+//                        String line;
+//
+//                        while ((line = inputStream.readLine()) != null) {
+//                            System.out.println(line);
+//                        }
+//                    }
+//                    finally {
+//                        if (inputStream != null) {
+//                            inputStream.close();
+//                        }
+//                    }
+//                }
+//        }
+    }
+
+
     private static void buildHeader() {
         header = new ArrayList<String>();
         header.add("fund_name");
@@ -53,8 +110,9 @@ public class Main {
         header.add("dirty_mkt_value");
         header.add("ptf_weight");
     }
-    private static void reformatData(List<ArrayList<String>> myData, List<List<String>> output) throws Exception {
-        String ticker = TICKER;
+
+    private static void reformatData(List<ArrayList<String>> myData, List<List<String>> output, String ticker) throws Exception {
+//        String ticker = TICKER;
         String fund = myData.get(0).get(0);
         ArrayList<String> dates = myData.get(DATE_ROW);
 
@@ -62,10 +120,10 @@ public class Main {
 //            System.out.println(i+": "+ dates.get(i));
 //        }
 
-        List<ArrayList<String>> body = myData.subList(HEADER, myData.size()-FOOTER);
+        List<ArrayList<String>> body = myData.subList(HEADER, myData.size() - FOOTER);
 
 
-        for (int i=0; i<body.size(); i++) {
+        for (int i = 0; i < body.size(); i++) {
             List<String> row = body.get(i);
             String securityName = row.get(0);
 
@@ -77,7 +135,7 @@ public class Main {
                 rowSection.add(0, securityName);
                 rowSection.add(0, date);
                 rowSection.add(0, ticker);
-                rowSection.add( 0, fund);
+                rowSection.add(0, fund);
                 output.add(rowSection);
             }
         }
@@ -87,24 +145,25 @@ public class Main {
 //          System.out.println("#output.size should be: "+dates.size()*body.size());
 
     }
+
     private static ArrayList<String> getDates(ArrayList<String> datesRow) throws Exception {
 //        1,7,13,20
         ArrayList<String> dates = new ArrayList<>();
-        for(int i=1; i<datesRow.size(); i+=NUM_OF_COL) {
+        for (int i = 1; i < datesRow.size(); i += NUM_OF_COL) {
             dates.add(datesRow.get(i));
         }
         return dates;
     }
 
-    private static List<ArrayList<String>> readData() throws Exception {
+    private static List<ArrayList<String>> readData(String filePath) throws Exception {
         List<ArrayList<String>> collection = new ArrayList<ArrayList<String>>();
-        File fileTemplate = new File(FILE_PATH);
+        File fileTemplate = new File(filePath);
         FileInputStream fis = new FileInputStream(fileTemplate);
         Reader fr = new InputStreamReader(fis, "UTF-8");
 
         List<String> values = CSVHelper.parseLine(fr);
-        while (values!=null) {
-            collection.add( new ArrayList<String>(values) );
+        while (values != null) {
+            collection.add(new ArrayList<String>(values));
             values = CSVHelper.parseLine(fr);
         }
         fis.close();
@@ -112,8 +171,8 @@ public class Main {
         return collection;
     }
 
-    private static void saveData(List<List<String>> myData) throws Exception {
-        File csvFile = new File("output.csv");
+    private static void saveData(List<List<String>> myData, String filePath) throws Exception {
+        File csvFile = new File(filePath);
         FileOutputStream fos = new FileOutputStream(csvFile);
         Writer fw = new OutputStreamWriter(fos, "UTF-8");
         for (List<String> oneDatum : myData) {
