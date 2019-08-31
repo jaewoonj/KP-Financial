@@ -3,36 +3,66 @@ package com.company;
 import java.io.*;
 import java.util.*;
 public class Main {
+
+    //CSV File Format Configuration
     private static final int NUM_OF_COL = 6;
     private static final int DATE_ROW= 6;
     private static final int HEADER= 10;
     private static final int FOOTER= 12;
 
+    private static List<String> header;
+    private static List<List<String>> output;
+
+    //TEMPORARY
     private static final String TICKER = "BFCCX";
-    private static final String FILE_PATH = "BFCCX_raw.csv";
+    private static final String FILE_PATH = "samples-1/BFCCX_raw.csv";
 
     public static void main(String[] args) {
+        buildHeader();
         List<ArrayList<String>> data = null;
+
         try {
+
+            //collect data
             data = readData();
-            List<List<String>> output = reformatData(data);
+
+            //initialize output
+            output = new ArrayList<>();
+            output.add(header);
+
+            //re-format raw data into required output format
+            reformatData(data, output);
+
+            //export output data
             saveData(output);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-
-    public static List<List<String>> reformatData(List<ArrayList<String>> myData) throws Exception {
+    private static void buildHeader() {
+        header = new ArrayList<String>();
+        header.add("fund_name");
+        header.add("ticker");
+        header.add("date");
+        header.add("security_name");
+        header.add("CUSIP");
+        header.add("price");
+        header.add("quantity");
+        header.add("clean_mkt_value");
+        header.add("dirty_mkt_value");
+        header.add("ptf_weight");
+    }
+    private static void reformatData(List<ArrayList<String>> myData, List<List<String>> output) throws Exception {
         String ticker = TICKER;
         String fund = myData.get(0).get(0);
         ArrayList<String> dates = myData.get(DATE_ROW);
+
 //        for(int i=1; i<dates.size(); i+=NUM_OF_COL) {
 //            System.out.println(i+": "+ dates.get(i));
 //        }
 
         List<ArrayList<String>> body = myData.subList(HEADER, myData.size()-FOOTER);
-        List<List<String>> output = new ArrayList<>();
 
 
         for (int i=0; i<body.size(); i++) {
@@ -44,9 +74,9 @@ public class Main {
                 List<String> rowSection = new ArrayList<>();
                 rowSection.addAll(row.subList(j, j + NUM_OF_COL));
                 String date = dates.get(j);
-                rowSection.add(0, ticker);
-                rowSection.add(0, date);
                 rowSection.add(0, securityName);
+                rowSection.add(0, date);
+                rowSection.add(0, ticker);
                 rowSection.add( 0, fund);
                 output.add(rowSection);
             }
@@ -56,11 +86,8 @@ public class Main {
 //        System.out.println("#of date rows: "+dates.size());
 //          System.out.println("#output.size should be: "+dates.size()*body.size());
 
-
-
-        return output;
     }
-    public static ArrayList<String> getDates(ArrayList<String> datesRow) throws Exception {
+    private static ArrayList<String> getDates(ArrayList<String> datesRow) throws Exception {
 //        1,7,13,20
         ArrayList<String> dates = new ArrayList<>();
         for(int i=1; i<datesRow.size(); i+=NUM_OF_COL) {
@@ -69,8 +96,7 @@ public class Main {
         return dates;
     }
 
-
-    public static List<ArrayList<String>> readData() throws Exception {
+    private static List<ArrayList<String>> readData() throws Exception {
         List<ArrayList<String>> collection = new ArrayList<ArrayList<String>>();
         File fileTemplate = new File(FILE_PATH);
         FileInputStream fis = new FileInputStream(fileTemplate);
@@ -86,7 +112,7 @@ public class Main {
         return collection;
     }
 
-    public static void saveData(List<List<String>> myData) throws Exception {
+    private static void saveData(List<List<String>> myData) throws Exception {
         File csvFile = new File("output.csv");
         FileOutputStream fos = new FileOutputStream(csvFile);
         Writer fw = new OutputStreamWriter(fos, "UTF-8");
