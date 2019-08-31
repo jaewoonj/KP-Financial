@@ -17,9 +17,6 @@ public class Main {
     private static final String RAW_DATA_PATH = "raw_data";
     private static final String OUTPUT_PATH = "output";
 
-    //TEMPORARY
-    private static final String TICKER = "BFCCX";
-    private static final String FILE_PATH = "samples/BFCCX_raw.csv";
 
     public static void main(String[] args) {
         buildHeader();
