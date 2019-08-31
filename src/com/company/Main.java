@@ -44,53 +44,11 @@ public class Main {
                 saveData(output, outputFilePath);
 
             }
-//            //collect data
-//            data = readData();
-//
-//
-//            //initialize output
-//            output = new ArrayList<>();
-//            output.add(header);
-//
-//            //re-format raw data into required output format
-//            reformatData(data, output);
-//
-//            //export output data
-//            saveData(output);
+
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static void readDir() throws IOException {
-        String target_dir = "raw_data";
-        File dir = new File(target_dir);
-        File[] files = dir.listFiles();
-        String[] fileNames = dir.list();
-        for (String a : fileNames) {
-            System.out.println(a);
-        }
-//        for (File f : files){
-//                if(f.isFile()) {
-//                    BufferedReader inputStream = null;
-//
-//                    try {
-//                        inputStream = new BufferedReader(
-//                                new FileReader(f));
-//                        String line;
-//
-//                        while ((line = inputStream.readLine()) != null) {
-//                            System.out.println(line);
-//                        }
-//                    }
-//                    finally {
-//                        if (inputStream != null) {
-//                            inputStream.close();
-//                        }
-//                    }
-//                }
-//        }
     }
 
 
@@ -113,9 +71,6 @@ public class Main {
         String fund = myData.get(0).get(0);
         ArrayList<String> dates = myData.get(DATE_ROW);
 
-//        for(int i=1; i<dates.size(); i+=NUM_OF_COL) {
-//            System.out.println(i+": "+ dates.get(i));
-//        }
 
         List<ArrayList<String>> body = myData.subList(HEADER, myData.size() - FOOTER);
 
@@ -136,10 +91,6 @@ public class Main {
                 output.add(rowSection);
             }
         }
-//        System.out.println("size: "+ output.size());
-//        System.out.println("#of content rows: "+ body.size());
-//        System.out.println("#of date rows: "+dates.size());
-//          System.out.println("#output.size should be: "+dates.size()*body.size());
 
     }
 
