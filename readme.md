@@ -10,6 +10,7 @@
     4. Make sure to have all the input csv files under "raw_data"
     5. Create "output" under the project directory, if it doesn't exist
 
+![Run the App](https://raw.githubusercontent.com/jaewoonj/KP-Financial/master/resource/img/run-the-application.png)
      
 ### Notes
 * Under "raw_data" are the input csv files    
