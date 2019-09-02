@@ -1,3 +1,5 @@
 *.csv
 
 **/out
+
+.idea/uiDesigner.xml
