@@ -25,21 +25,29 @@ public class Main {
             String[] fileNames = dir.list();
 
             for (int i = 0; i < files.length; i++) {
-                String inputFilePath = RAW_DATA_PATH + "/" + fileNames[i];
 
-                //collect data
-                List<ArrayList<String>> data = readData(inputFilePath);
+                String[] fileNameData = fileNames[i].split("\\.");
+                // fileNameData[0]: file name
+                //  fileNameData[1]: file extension
 
-                //initialize output
-                output = new ArrayList<>();
-                output.add(header);
+                //only process .csv files
+                if (fileNameData[1].equals("csv")) {
+                    String inputFilePath = RAW_DATA_PATH + "/" + fileNames[i];
 
-                //re-format raw data into required output format
-                reformatData(data, output, fileNames[i].split("\\.")[0]);
+                    //collect data
+                    List<ArrayList<String>> data = readData(inputFilePath);
 
-//                //export output data
-//                String outputFilePath = OUTPUT_PATH + "/" + fileNames[i];
-//                saveData(output, outputFilePath);
+                    //initialize output
+                    output = new ArrayList<>();
+                    output.add(header);
+
+                    //re-format raw data into required output format
+                    reformatData(data, output, fileNameData[0]);
+
+                    //export output data
+                    String outputFilePath = OUTPUT_PATH + "/" + fileNames[i];
+                    saveData(output, outputFilePath);
+                }
 
             }
 
@@ -67,8 +75,7 @@ public class Main {
     private static void reformatData(List<ArrayList<String>> myData, List<List<String>> output, String ticker) throws Exception {
 //        String ticker = TICKER;
         String fund = myData.get(0).get(0);
-        ArrayList<String> dates = myData.get(DATE_ROW);
-
+//        ArrayList<String> dates = myData.get(DATE_ROW);
 
         List<ArrayList<String>> body = myData.subList(HEADER, myData.size() - FOOTER);
 
@@ -81,9 +88,9 @@ public class Main {
 
                 List<String> rowSection = new ArrayList<>();
                 rowSection.addAll(row.subList(j, j + NUM_OF_COL));
-                String date = dates.get(j);
+//                String date = dates.get(j);
                 rowSection.add(0, securityName);
-                rowSection.add(0, date);
+//                rowSection.add(0, date);
                 rowSection.add(0, ticker);
                 rowSection.add(0, fund);
                 output.add(rowSection);
