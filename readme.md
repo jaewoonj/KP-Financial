@@ -19,4 +19,4 @@
 ** the output files are sorted by the security name first **
 ** Sorting by dates and then by company can be easily achieved using Excel: Data -> Sort **  
   
-![screenshot of excel](https://raw.githubusercontent.com/jaewoonj/KP-Financial/master/guide/img/excel-data-sort.png)
+![screenshot of excel](https://raw.githubusercontent.com/jaewoonj/KP-Financial/master/resource/img/sort-data-excel.png)
