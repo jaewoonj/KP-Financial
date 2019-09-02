@@ -1,8 +1,8 @@
 # CSV re-formatter
 ## How to Run this application
-1. download IntelliJ
+1. [Download IntelliJ](https://www.jetbrains.com/idea/download/#section=mac)
 2. File -> New -> Project from Version Control -> Git
-    - enter this URL: https://github.com/jaewoonj/KP-Financial.git
+    - Enter this URL: https://github.com/jaewoonj/KP-Financial.git
 3. Once the project is successfully loaded on IntelliJ, Run the application by clicking the Start button
     1. Before running check the following conditions
     2. Click and install all the dependencies, if intellij shows any install notification  
